@@ -15,4 +15,9 @@ Middleearth.controllers :sellers do
     json_status 200, response
   end
 
+  post :register do
+    response = GameboardSellerMap.register_with_gameboard(params.with_indifferent_access)
+    json_status 200, response
+  end
+
 end

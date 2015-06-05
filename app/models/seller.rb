@@ -16,4 +16,5 @@ class Seller < ActiveRecord::Base
       new_seller.save!
     end
   end
+
 end
