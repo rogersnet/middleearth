@@ -69,4 +69,34 @@ class SellerWeekInvestment < ActiveRecord::Base
         .where(:seller_week_purchase_cost_plan => {:segment => segment, :category=>category})
          .select(SellerWeekPurchaseCostPlan.arel_table[:stock_quantity])
   end
+
+  def self.calculate_cost_to_subtract(week,gameboard_id,seller_id,selling_price,orders)
+    record = self.where(:seller_id => seller_id,:gameboard_id => gameboard_id,:week_number => week)
+
+    #get the cost sheet for the board
+    cost_sheet = CostSheet.find_by_gameboard_id(gameboard_id)
+
+    #get marketing, operating and inventory cost based on the package selected
+    marketing_cost = cost_sheet.cost_sheet_investment_packages.where(:id => record.marketing_cost_id).select(:cost_per_week).first || 0
+    operating_cost = cost_sheet.cost_sheet_investment_packages.where(:id => record.operating_cost_id).select(:cost_per_week).first || 0
+    inventory_cost = cost_sheet.cost_sheet_investment_packages.where(:id => record.inventory_cost_id).select(:cost_per_week).first || 0
+
+    #get other fixed costs
+    commission   = cost_sheet.cost_sheet_investment_packages.where(:header => 'commision').select(:package).first
+    closing_fee  = cost_sheet.cost_sheet_investment_packages.where(:header => 'closing_fee').select(:package).first
+    packaging    = cost_sheet.cost_sheet_investment_packages.where(:header => 'packaging').select(:package).first
+    shipping     = cost_sheet.cost_sheet_investment_packages.where(:header => 'shipping').select(:package).first
+    service_tax  = cost_sheet.cost_sheet_investment_packages.where(:header => 'service_tax').select(:package).first
+    vat          = cost_sheet.cost_sheet_investment_packages.where(:header => 'vat').select(:package).first
+
+    cost_to_subtract = marketing_cost + operating_cost + inventory_cost
+    cost_to_subtract = cost_to_subtract + (commission / 100) * selling_price
+    cost_to_subtract = cost_to_subtract + closing_fee * orders
+    cost_to_subtract = cost_to_subtract + packaging * orders
+    cost_to_subtract = cost_to_subtract + shipping * orders
+    cost_to_subtract = cost_to_subtract + (service_tax/100) * ((commission/100)*selling_price)
+    cost_to_subtract = cost_to_subtract + (vat/100)*selling_price
+
+    cost_to_subtract
+  end
 end

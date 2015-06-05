@@ -35,10 +35,32 @@ class SimulateMpSelling
                                     :category     => demand[:category]).first
           quan_to_update = swl.quantity - distributed_size[index]
           swl.update_attributes(:quantity => quan_to_update)
+
+          #update p & l for the seller
+          pal = SellerWeekProfitAndLoss.where(:seller_id => seller,:week_number => week, :gameboard_id => gameboard_id).first
+          if pal.nil?
+            pal              = SellerWeekProfitAndLoss.new
+            pal.seller_id    = seller
+            pal.week_number  = week
+            pal.gameboard_id = gameboard_id
+            pal.save!
+            pal = pal.reload
+          end
+
+          #calculate total cost of goods sold
+          seller_price = SellerWeekUnitPriceDeclaration.get_unit_price_cost(seller,gameboard_id,week,demand[:segment],demand[:category])
+          cogs = distributed_size[index] * seller_price + pal.cogs
+
+          #calculate net cost
+          cost_subs = SellerWeekInvestment.calculate_cost_to_subtract(week,gameboard_id,seller,seller_price,distributed_size[index])
+          net_cogs  = cogs - cost_subs + pal.net_cogs
+
+          pal.update_attributes(:cogs => cogs, :net_cogs => net_cogs)
        end
      end
 
      #simulation over
+     SellerWeekProfitAndLoss.where(:gameboard_id => gameboard_id, :week_number => week)
   end
 
   def self.distribute_quantity(quantity,size)

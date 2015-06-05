@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 24) do
+ActiveRecord::Schema.define(:version => 25) do
 
   create_table "cost_sheet_investment_packages", :force => true do |t|
     t.integer  "cost_sheet_id"
@@ -155,6 +155,16 @@ ActiveRecord::Schema.define(:version => 24) do
     t.integer  "quantity"
     t.string   "segment"
     t.string   "category"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  create_table "seller_week_profit_and_losses", :force => true do |t|
+    t.integer  "seller_id"
+    t.integer  "gameboard_id"
+    t.integer  "week_number"
+    t.float    "cogs"
+    t.float    "net_cogs"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
   end

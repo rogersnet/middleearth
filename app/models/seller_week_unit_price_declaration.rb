@@ -31,4 +31,12 @@ class SellerWeekUnitPriceDeclaration < ActiveRecord::Base
     end
     response
   end
+
+  def self.get_unit_price_cost(seller_id,gameboard_id,week_number,segment,category)
+    where(:seller_id => seller_id,
+          :gameboard_id => gameboard_id,
+          :week_number => week_number,
+          :segment => segment,
+          :category => category).select(:cost).first
+  end
 end
