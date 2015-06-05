@@ -79,7 +79,7 @@ class CostSheet < ActiveRecord::Base
     response
   end
 
-  def self.fetch_cost_sheet_from_gameboard(gameboard_id)
+  def self.fetch_cost_sheet_for_gameboard(gameboard_id)
     #return nil if no gameboard exists
     return nil unless Gameboard.exists?(:id => gameboard_id)
 
