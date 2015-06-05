@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 22) do
+ActiveRecord::Schema.define(:version => 23) do
 
   create_table "cost_sheet_investment_packages", :force => true do |t|
     t.integer  "cost_sheet_id"
@@ -49,6 +49,13 @@ ActiveRecord::Schema.define(:version => 22) do
     t.integer  "total_demand_estimate"
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
+  end
+
+  create_table "gameboard_seller_maps", :force => true do |t|
+    t.integer  "seller_id"
+    t.integer  "gameboard_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   create_table "gameboard_week_maps", :force => true do |t|

@@ -62,4 +62,11 @@ class SellerWeekInvestment < ActiveRecord::Base
     end
     response
   end
+
+  def self.get_quantity_for_segment_category(seller_id,gameboard_id,week_number,segment,category)
+    joins(:seller_week_purchase_cost_plan)
+        .where(:seller_id => seller_id, :gameboard_id => gameboard_id, :week_number => week_number)
+        .where(:seller_week_purchase_cost_plan => {:segment => segment, :category=>category})
+         .select(SellerWeekPurchaseCostPlan.arel_table[:stock_quantity])
+  end
 end

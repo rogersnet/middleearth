@@ -4,7 +4,7 @@ class CreatePurchaseCostHeaders < ActiveRecord::Migration
       t.integer :cost_sheet_id
       t.integer :stock_lower_bound
       t.integer :stock_upper_bound
-      t.string :segment
+      t.string  :segment
       t.timestamps
     end
   end
