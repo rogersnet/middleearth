@@ -11,7 +11,22 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 5) do
+ActiveRecord::Schema.define(:version => 10) do
+
+  create_table "cost_sheet_investment_packages", :force => true do |t|
+    t.integer  "cost_sheet_id"
+    t.string   "header"
+    t.string   "package"
+    t.float    "cost_per_week"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  create_table "cost_sheets", :force => true do |t|
+    t.integer  "gameboard_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
 
   create_table "gameboard_week_maps", :force => true do |t|
     t.integer  "gameboard_id"
@@ -38,6 +53,23 @@ ActiveRecord::Schema.define(:version => 5) do
     t.string   "flipkart_id"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+  end
+
+  create_table "purchase_cost_headers", :force => true do |t|
+    t.integer  "cost_sheet_id"
+    t.integer  "stock_lower_bound"
+    t.integer  "stock_upper_bound"
+    t.string   "segment"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
+
+  create_table "purchase_cost_items", :force => true do |t|
+    t.integer  "purchase_cost_header_id"
+    t.string   "category"
+    t.float    "cost"
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
   end
 
   create_table "sellers", :force => true do |t|
