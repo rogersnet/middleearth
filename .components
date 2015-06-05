@@ -1,6 +1,6 @@
 ---
 :orm: activerecord
-:test: shoulda
+:test: none
 :mock: none
 :script: none
 :renderer: haml
