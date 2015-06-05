@@ -6,7 +6,7 @@ Middleearth.controllers :sellers do
   end
 
   get :show, :with => :email do
-    seller = Seller.find_by_email(:email)
+    seller = Seller.find_by_email(params[:email])
     json_status 200, seller
   end
 
