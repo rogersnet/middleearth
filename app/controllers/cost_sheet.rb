@@ -3,7 +3,7 @@ Middleearth.controllers :cost_sheet do
   # {
   #   gameboard_id: 1,
   #   investment_packages: [
-  #      {header: 'marketing_cost', package: '10% increase in demand', cost: 18000},
+  #      {header: 'marketing_cost', package: '10% increase in demand', cost: 18},
   #      {header: 'operations_cost', package: '3500 orders/week', cost: 12000}
   #   ],
   #   purchase_cost: [

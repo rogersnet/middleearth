@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 13) do
+ActiveRecord::Schema.define(:version => 12) do
 
   create_table "cost_sheet_investment_packages", :force => true do |t|
     t.integer  "cost_sheet_id"
@@ -84,23 +84,13 @@ ActiveRecord::Schema.define(:version => 13) do
     t.datetime "updated_at",        :null => false
   end
 
-  create_table "seller_week_purchase_cost_plan_headers", :force => true do |t|
-    t.integer  "seller_id"
-    t.integer  "gameboard_id"
-    t.integer  "week_number"
-    t.integer  "stock_lower_bound"
-    t.integer  "stock_upper_bound"
+  create_table "seller_week_purchase_cost_plan", :force => true do |t|
+    t.integer  "seller_week_investment_plan_id"
+    t.integer  "stock_quantity"
     t.string   "segment"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
-  end
-
-  create_table "seller_week_purchase_cost_plan_items", :force => true do |t|
-    t.integer  "header_id"
     t.string   "category"
-    t.float    "cost"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
   end
 
   create_table "sellers", :force => true do |t|
