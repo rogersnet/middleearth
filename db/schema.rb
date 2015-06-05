@@ -11,7 +11,25 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 2) do
+ActiveRecord::Schema.define(:version => 4) do
+
+  create_table "gameboard_week_maps", :force => true do |t|
+    t.integer  "gameboard_id"
+    t.integer  "week_number"
+    t.string   "status"
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  create_table "gameboards", :force => true do |t|
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.integer  "current_week"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
 
   create_table "moderators", :force => true do |t|
     t.string   "name"
