@@ -3,7 +3,6 @@ class DemandPackageDisclosure < ActiveRecord::Base
   has_many :demand_package_disclosure_segments
   has_many :demand_package_disclosure_categories
 
-
   def self.fetch_demand_package_by_id(dp_id)
     return nil unless DemandPackageDisclosure.exists?(:id => dp_id)
 
@@ -15,5 +14,15 @@ class DemandPackageDisclosure < ActiveRecord::Base
       response.segment_demands << {:segment => seg.segment, :demand_size => seg.demand_size}
     end
     response
+  end
+
+  def self.fetch_actual_demand(week_number,gameboard_id)
+    demand_package_id = GameboardWeekMap.where(:gameboard_id => gameboard_id,:week_number => week_number).select(:demand_package_disclosure_id).first
+
+    self.joins(:demand_package_disclosure_categories)
+        .where(:id => demand_package_id)
+         .select(DemandPackageDisclosureCategory.arel_table[:quantity])
+         .select(DemandPackageDisclosureCategory.arel_table[:segment])
+         .select(DemandPackageDisclosureCategory.arel_table[:category])
   end
 end
