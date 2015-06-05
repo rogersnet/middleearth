@@ -10,4 +10,8 @@ Middleearth.controllers :gameboards do
     json_status 200, gb_status
   end
 
+  post :create_new_week do
+    response = GameboardWeekMap.create_new_week(params.with_indifferent_access)
+    json_status response.status,response.message
+  end
 end

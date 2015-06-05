@@ -25,4 +25,17 @@ class DemandPackageDisclosure < ActiveRecord::Base
          .select(DemandPackageDisclosureCategory.arel_table[:segment])
          .select(DemandPackageDisclosureCategory.arel_table[:category])
   end
+
+  def self.find_unassigned(gameboard_id)
+    all_dps = DemandPackageDisclosure.all
+    candidate_dps = []
+    all_dps.each do |dp|
+      candidate_dps << dp unless GameboardWeekMap.exists?(:gameboard_id => gameboard_id, :demand_package_disclosure_id => dp.id)
+    end
+
+    total_cand_dps = candidate_dps.count
+    random = rand(1..total_cand_dps)
+    response = total_cand_dps[random].id
+    response
+  end
 end
