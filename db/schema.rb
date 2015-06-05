@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 18) do
+ActiveRecord::Schema.define(:version => 22) do
 
   create_table "cost_sheet_investment_packages", :force => true do |t|
     t.integer  "cost_sheet_id"
@@ -96,6 +96,27 @@ ActiveRecord::Schema.define(:version => 18) do
     t.datetime "updated_at",              :null => false
   end
 
+  create_table "seller_gameboard_scores", :force => true do |t|
+    t.integer  "seller_id"
+    t.integer  "gameboard"
+    t.float    "score"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "seller_progress_cards", :force => true do |t|
+    t.integer  "seller_id"
+    t.integer  "gameboard_id"
+    t.integer  "week_number"
+    t.integer  "quantity_procured"
+    t.float    "procurement_cost"
+    t.integer  "balance_stock"
+    t.float    "closing_balance"
+    t.integer  "current_balance"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
+
   create_table "seller_week_investments", :force => true do |t|
     t.integer  "seller_id"
     t.integer  "gameboard_id"
@@ -117,6 +138,17 @@ ActiveRecord::Schema.define(:version => 18) do
     t.string   "category"
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
+  end
+
+  create_table "seller_week_logs", :force => true do |t|
+    t.integer  "seller_id"
+    t.integer  "gameboard_id"
+    t.integer  "week_number"
+    t.integer  "quantity"
+    t.string   "segment"
+    t.string   "category"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   create_table "seller_week_purchase_cost_plan", :force => true do |t|
@@ -146,6 +178,7 @@ ActiveRecord::Schema.define(:version => 18) do
     t.string   "geo_location"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
+    t.string   "password"
   end
 
 end
