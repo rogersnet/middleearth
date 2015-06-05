@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 12) do
+ActiveRecord::Schema.define(:version => 18) do
 
   create_table "cost_sheet_investment_packages", :force => true do |t|
     t.integer  "cost_sheet_id"
@@ -28,14 +28,38 @@ ActiveRecord::Schema.define(:version => 12) do
     t.datetime "updated_at",   :null => false
   end
 
+  create_table "demand_package_disclosure_categories", :force => true do |t|
+    t.integer  "demand_package_disclosure_id"
+    t.string   "segment"
+    t.string   "category"
+    t.integer  "demand_size"
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
+  end
+
+  create_table "demand_package_disclosure_segments", :force => true do |t|
+    t.integer  "demand_package_disclosure_id"
+    t.string   "segment"
+    t.integer  "demand_size"
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
+  end
+
+  create_table "demand_package_disclosures", :force => true do |t|
+    t.integer  "total_demand_estimate"
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+  end
+
   create_table "gameboard_week_maps", :force => true do |t|
     t.integer  "gameboard_id"
     t.integer  "week_number"
     t.string   "status"
     t.datetime "start_time"
     t.datetime "end_time"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+    t.integer  "demand_package_id"
   end
 
   create_table "gameboards", :force => true do |t|
@@ -84,6 +108,17 @@ ActiveRecord::Schema.define(:version => 12) do
     t.datetime "updated_at",        :null => false
   end
 
+  create_table "seller_week_liquidations", :force => true do |t|
+    t.integer  "seller_id"
+    t.integer  "gameboard_id"
+    t.integer  "week_number"
+    t.integer  "stock_quantity"
+    t.string   "segment"
+    t.string   "category"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
   create_table "seller_week_purchase_cost_plan", :force => true do |t|
     t.integer  "seller_week_investment_plan_id"
     t.integer  "stock_quantity"
@@ -91,6 +126,17 @@ ActiveRecord::Schema.define(:version => 12) do
     t.string   "category"
     t.datetime "created_at",                     :null => false
     t.datetime "updated_at",                     :null => false
+  end
+
+  create_table "seller_week_unit_price_declarations", :force => true do |t|
+    t.integer  "seller_id"
+    t.integer  "gameboard_id"
+    t.integer  "week_number"
+    t.string   "segment"
+    t.string   "category"
+    t.float    "cost"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   create_table "sellers", :force => true do |t|
