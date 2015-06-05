@@ -7,7 +7,7 @@ Middleearth.controllers :moderators do
 
   get :show, :with => :id do
     moderator = Moderator.find(:id)
-    json_status 200, moderators
+    json_status 200, moderator
   end
 
 end
