@@ -1,4 +1,4 @@
-class PurchaseCostItems < ActiveRecord::Base
+class PurchaseCostItem < ActiveRecord::Base
 
   belongs_to :purchase_cost_header
 

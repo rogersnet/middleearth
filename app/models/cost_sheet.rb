@@ -49,7 +49,7 @@ class CostSheet < ActiveRecord::Base
           inv_package.cost_sheet_id = cost_sheet.id
           inv_package.header        = package[:header]
           inv_package.package       = package[:package]
-          inv_package.cost_per_week = package[:cost]
+          inv_package.cost_per_week = package[:cost_per_week]
           inv_package.save!
         end
 
@@ -65,7 +65,7 @@ class CostSheet < ActiveRecord::Base
 
           pc[:items].each do |item|
             pc_item = PurchaseCostItem.new
-            pc_item.purchase_header_id = pc_header.id
+            pc_item.purchase_cost_header_id = pc_header.id
             pc_item.category = item[:category]
             pc_item.cost     = item[:cost]
             pc_item.save!
