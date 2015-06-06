@@ -33,7 +33,11 @@ class SimulateMpSelling
                                     :gameboard_id => gameboard_id,
                                     :segment      => demand[:segment],
                                     :category     => demand[:category]).first_or_create
-          quan_to_update = (swl.quantity - distributed_size[index]).abs
+
+          quan_to_update = swl.quantity - distributed_size[index]
+
+          continue if quan_to_update < 0
+
           swl.update_attributes(:quantity => quan_to_update)
 
           #update p & l for the seller
