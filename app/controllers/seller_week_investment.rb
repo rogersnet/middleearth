@@ -14,6 +14,7 @@ Middleearth.controllers :seller_week_investment do
   #    ]
   # }
   post :create do
+    params = validate_http_request_body request
     response = SellerWeekInvestment.create_from_hash(params.with_indifferent_access)
     json_status 200, response
   end

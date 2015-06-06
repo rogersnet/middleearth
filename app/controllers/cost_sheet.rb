@@ -17,6 +17,7 @@ Middleearth.controllers :cost_sheet do
   # }
 
   post :create do
+    params = validate_http_request_body request
     response = CostSheet.create_from_hash(params.with_indifferent_access)
     json_status response.status, response.message
   end
