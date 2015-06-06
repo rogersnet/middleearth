@@ -20,4 +20,9 @@ Middleearth.controllers :sellers do
     json_status 200, response
   end
 
+  post :update_balance do
+    response = SellerProgressCard.update_balance(params.with_indifferent_access)
+    json_status response.status, response.message
+  end
+
 end

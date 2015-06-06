@@ -52,11 +52,21 @@ class SimulateMpSelling
           cogs = distributed_size[index] * seller_price + pal.cogs
 
           #calculate net cost
-          cost_subs = SellerWeekInvestment.calculate_cost_to_subtract(week,gameboard_id,seller,seller_price,distributed_size[index])
-          net_cogs  = cogs - cost_subs + pal.net_cogs
+          seller_decl = SellerWeekPurchaseCostPlan.get_stock_quantity(seller,gameboard_id,week,demand[:segment],demand[:category])
+          cost_add = SellerWeekInvestment.calculate_cost_to_subtract(week,gameboard_id,seller,seller_price,distributed_size[index])
+          buying_price = PurchaseCostHeader.get_buying_cost(gameboard_id,demand[:segment],demand[:category],seller_decl)
+          coby = buying_price * distributed_size[index] + cost_add + pal.net_cogs
 
           pal.update_attributes(:cogs => cogs, :net_cogs => net_cogs)
        end
+     end
+
+     #update current balance
+     sellers.each do |seller|
+       pal = SellerWeekProfitAndLoss.where(:seller_id => seller, :gameboard_id => gameboard_id, :week_number => week)
+       spc = SellerProgressCard.where(:seller_id => seller, :gameboard_id => gameboard_id).first
+       bal = spc.current_balance
+       spc.update_attributes(:current_balance => bal - pal.net_cogs)
      end
 
      #simulation over

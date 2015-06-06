@@ -8,4 +8,5 @@ class PurchaseCostHeader < ActiveRecord::Base
 
   validates_presence_of :cost_sheet_id
   validates_presence_of :segment
+
 end
