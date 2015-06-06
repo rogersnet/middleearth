@@ -54,7 +54,7 @@ class SimulateMpSelling
           #calculate net cost
           seller_decl = SellerWeekPurchaseCostPlan.get_stock_quantity(seller,gameboard_id,week,demand[:segment],demand[:category])
           cost_add = SellerWeekInvestment.calculate_cost_to_subtract(week,gameboard_id,seller,seller_price,distributed_size[index])
-          buying_price = PurchaseCostHeader.get_buying_cost(gameboard_id,demand[:segment],demand[:category],seller_decl)
+          buying_price = PurchaseCostItems.get_buying_cost(gameboard_id,demand[:segment],demand[:category],seller_decl)
           coby = buying_price * distributed_size[index] + cost_add + pal.net_cogs
 
           pal.update_attributes(:cogs => cogs, :net_cogs => net_cogs)
