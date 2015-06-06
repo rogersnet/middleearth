@@ -37,7 +37,7 @@ class DemandPackageDisclosure < ActiveRecord::Base
 
     total_cand_dps = candidate_dps.count
     random = rand(1..total_cand_dps)
-    response = total_cand_dps[random].id
+    response = candidate_dps[random].id
     response
   end
 end

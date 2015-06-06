@@ -22,7 +22,7 @@ class GameboardWeekMap < ActiveRecord::Base
 
         gbw = GameboardWeekMap.new
         gbw.gameboard_id = gameboard_id
-        gbw.week_number  = (GameboardWeekMap.max(:week_number).where(:gameboard_id => gameboard_id) || 0 ) + 1
+        gbw.week_number  = (GameboardWeekMap.where(:gameboard_id => gameboard_id).maximum(:week_number) || 0 ) + 1
         gbw.start_time   = Time.now
         gbw.status       = 'IN_PROGRESS'
         gbw.demand_package_disclosure_id = DemandPackageDisclosure.find_unassigned(gameboard_id)
