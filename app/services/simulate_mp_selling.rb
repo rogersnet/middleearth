@@ -25,7 +25,7 @@ class SimulateMpSelling
      actual_demand = DemandPackageDisclosure.fetch_actual_demand(week,gameboard_id)
      actual_demand.each do |demand|
        prioritized_sellers = SellerSelection.select_supplier(week,gameboard_id,demand[:segment],demand[:category])
-       distributed_size    = self.distribute_quantity(demand.quantity,prioritized_sellers.count)
+       distributed_size    = self.distribute_quantity(demand.demand_size,prioritized_sellers.count)
        prioritized_sellers.each_with_index do |seller,index|
           #update quantity sold for this segment
           swl = SellerWeekLog.where(:seller_id    => seller,

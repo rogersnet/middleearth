@@ -19,9 +19,11 @@ class DemandPackageDisclosure < ActiveRecord::Base
   def self.fetch_actual_demand(week_number,gameboard_id)
     demand_package_id = GameboardWeekMap.where(:gameboard_id => gameboard_id,:week_number => week_number).select(:demand_package_disclosure_id).first
 
+    return [] if demand_package_id.nil?
+
     self.joins(:demand_package_disclosure_categories)
         .where(:id => demand_package_id)
-         .select(DemandPackageDisclosureCategory.arel_table[:quantity])
+         .select(DemandPackageDisclosureCategory.arel_table[:demand_size])
          .select(DemandPackageDisclosureCategory.arel_table[:segment])
          .select(DemandPackageDisclosureCategory.arel_table[:category])
   end
