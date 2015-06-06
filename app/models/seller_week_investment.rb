@@ -88,13 +88,13 @@ class SellerWeekInvestment < ActiveRecord::Base
     service_tax  = cost_sheet.cost_sheet_investment_packages.where(:header => 'service_tax').pluck(:package).first
     vat          = cost_sheet.cost_sheet_investment_packages.where(:header => 'vat').pluck(:package).first
 
-    cost_to_subtract = marketing_cost + operating_cost + inventory_cost
-    cost_to_subtract = cost_to_subtract + (commission / 100) * selling_price
-    cost_to_subtract = cost_to_subtract + closing_fee * orders
-    cost_to_subtract = cost_to_subtract + packaging * orders
-    cost_to_subtract = cost_to_subtract + shipping * orders
-    cost_to_subtract = cost_to_subtract + (service_tax/100) * ((commission/100)*selling_price)
-    cost_to_subtract = cost_to_subtract + (vat/100)*selling_price
+    cost_to_subtract = marketing_cost.to_i + operating_cost.to_i + inventory_cost.to_i
+    cost_to_subtract = cost_to_subtract + (commission.to_i / 100).to_i * selling_price.to_i
+    cost_to_subtract = cost_to_subtract + closing_fee.to_i * orders.to_i
+    cost_to_subtract = cost_to_subtract + packaging.to_i * orders.to_i
+    cost_to_subtract = cost_to_subtract + shipping.to_i * orders.to_i
+    cost_to_subtract = cost_to_subtract + (service_tax.to_i/100) * ((commission.to_i/100)*selling_price.to_i)
+    cost_to_subtract = cost_to_subtract + (vat.to_i/100)*selling_price.to_i
 
     cost_to_subtract
   end

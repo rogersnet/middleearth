@@ -23,28 +23,31 @@ class SimulateMpSelling
      #now our sellers are initialized, lets simulate the selling
      #get actual demand disclosures
      actual_demand = DemandPackageDisclosure.fetch_actual_demand(week,gameboard_id)
+
      actual_demand.each do |demand|
+
        prioritized_sellers = SellerSelection.select_supplier(week,gameboard_id,demand[:segment],demand[:category])
-       distributed_size    = self.distribute_quantity(demand.demand_size,prioritized_sellers.count)
+       distributed_size    = self.distribute_quantity(demand[:demand_size],prioritized_sellers.count)
+
        prioritized_sellers.each_with_index do |seller,index|
           #update quantity sold for this segment
-          swl = SellerWeekLog.where(:seller_id    => seller,
+          swl = SellerWeekLog.where(:seller_id    => seller.seller_id,
                                     :week_number  => week,
                                     :gameboard_id => gameboard_id,
                                     :segment      => demand[:segment],
                                     :category     => demand[:category]).first_or_create
 
-          quan_to_update = swl.quantity - distributed_size[index]
+          quan_to_update = distributed_size[index] rescue next
 
-          continue if quan_to_update < 0
+          next if quan_to_update < 0
 
           swl.update_attributes(:quantity => quan_to_update)
 
           #update p & l for the seller
-          pal = SellerWeekProfitAndLoss.where(:seller_id => seller,:week_number => week, :gameboard_id => gameboard_id).first
+          pal = SellerWeekProfitAndLoss.where(:seller_id => seller.seller_id,:week_number => week, :gameboard_id => gameboard_id).first
           if pal.nil?
             pal              = SellerWeekProfitAndLoss.new
-            pal.seller_id    = seller
+            pal.seller_id    = seller.seller_id
             pal.week_number  = week
             pal.gameboard_id = gameboard_id
             pal.save!
@@ -52,26 +55,32 @@ class SimulateMpSelling
           end
 
           #calculate total cost of goods sold
-          seller_price = SellerWeekUnitPriceDeclaration.get_unit_price_cost(seller,gameboard_id,week,demand[:segment],demand[:category])
-          cogs = distributed_size[index] * seller_price + pal.cogs
+
+          seller_price = SellerWeekUnitPriceDeclaration.get_unit_price_cost(seller.seller_id,gameboard_id,week,demand[:segment],demand[:category])
+          begin
+            cogs = distributed_size[index].to_i * seller_price + pal.cogs
+          rescue => e
+            p e.message
+          end
 
           #calculate net cost
-          seller_decl = SellerWeekPurchaseCostPlan.get_stock_quantity(seller,gameboard_id,week,demand[:segment],demand[:category])
+          seller_decl = SellerWeekPurchaseCostPlan.get_stock_quantity(seller.seller_id,gameboard_id,week,demand[:segment],demand[:category]) || 0
           cost_add = SellerWeekInvestment.calculate_cost_to_subtract(week,gameboard_id,seller,seller_price,distributed_size[index])
           buying_price = PurchaseCostItem.get_buying_cost(gameboard_id,demand[:segment],demand[:category],seller_decl)
-          coby = buying_price * distributed_size[index] + cost_add + pal.net_cogs
-
-          pal.update_attributes(:cogs => cogs, :net_cogs => net_cogs)
+          coby = buying_price.to_i * distributed_size[index]
+          pal.update_attributes(:cogs => cogs, :net_cogs => coby)
        end
      end
 
      #update current balance
+=begin
      sellers.each do |seller|
        pal = SellerWeekProfitAndLoss.where(:seller_id => seller, :gameboard_id => gameboard_id, :week_number => week)
        spc = SellerProgressCard.where(:seller_id => seller, :gameboard_id => gameboard_id).first_or_create
        bal = spc.current_balance
-       spc.update_attributes(:current_balance => (bal - pal.net_cogs).abs)
+       spc.update_attributes(:current_balance => (bal - pal.net_cogs).abs) rescue
      end
+=end
 
      #simulation over
      SellerWeekProfitAndLoss.where(:gameboard_id => gameboard_id, :week_number => week)
@@ -80,7 +89,13 @@ class SimulateMpSelling
   def self.distribute_quantity(quantity,size)
     result = []
 
-    rem_quantity = quantity
+    if size == 1
+      result << quantity.to_i
+      return result
+    end
+
+    rem_quantity = quantity.to_i
+    p quantity
     while rem_quantity > 1 do
       result << (0.8 * rem_quantity).to_i
       rem_quantity = rem_quantity - (0.8 * rem_quantity).to_i

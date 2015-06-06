@@ -37,6 +37,6 @@ class SellerWeekUnitPriceDeclaration < ActiveRecord::Base
           :gameboard_id => gameboard_id,
           :week_number => week_number,
           :segment => segment,
-          :category => category).select(:cost).first
+          :category => category).pluck(:cost).first
   end
 end
