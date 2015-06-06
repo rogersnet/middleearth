@@ -15,6 +15,11 @@ Middleearth.controllers :gameboards do
     json_status 200, gameboard
   end
 
+  get :sellers, :with => :gameboard_id do
+    sellers = GameboardSellerMap.by_gameboard(params[:gameboard_id])
+    json_status 200, sellers
+  end
+
   post :create_new_week do
     params = validate_http_request_body request
     response = GameboardWeekMap.create_new_week(params.with_indifferent_access)

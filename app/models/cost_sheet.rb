@@ -85,27 +85,27 @@ class CostSheet < ActiveRecord::Base
 
     response = {}
     cost_sheet = CostSheet.find_by_gameboard_id(gameboard_id)
-    response.gameboard_id = gameboard_id
+    response[:gameboard_id] = gameboard_id
 
     #fill in the investment pacakges
-    response.investment_packages = []
+    response[:investment_packages] = []
     cost_sheet.cost_sheet_investment_packages.each do |package|
-      response.investment_packages << {:header => package.header, :package => package.package, :cost_per_week => package.cost_per_week }
+      response[:investment_packages] << {:header => package.header, :package => package.package, :cost_per_week => package.cost_per_week }
     end
 
     #fill in the purchase cost matrix
-    response.purchase_cost = []
+    response[:purchase_cost] = []
     cost_sheet.purchase_cost_headers.each do |pch|
       pc = {}
-      pc.stock_lower_bound = pch.stock_lower_bound
-      pc.stock_upper_bound = pch.stock_upper_bound
-      pc.segment           = pch.segment
-      pc.items             = []
-      pch.items.each do |items|
-        pc.items << {:category => items.category, :cost => items.cost}
+      pc[:stock_lower_bound] = pch.stock_lower_bound
+      pc[:stock_upper_bound] = pch.stock_upper_bound
+      pc[:segment]           = pch.segment
+      pc[:items]             = []
+      pch.purchase_cost_items.each do |items|
+        pc[:items] << {:category => items.category, :cost => items.cost}
       end
 
-      response.purchase_cost << pc
+      response[:purchase_cost] << pc
     end
     response
   end

@@ -4,7 +4,7 @@ class SimulateMpSelling
      sellers = GameboardSellerMap.by_gameboard(gameboard_id)
 
      sellers.each do |seller|
-       prev_week = week - 1
+       prev_week = week.to_i - 1
        if prev_week > 0
           prev_week_logs = SellerWeekLog.where(:seller_id => seller,:gameboard_id => gameboard_id, :week_number => prev_week)
           prev_week_logs.each do |pwl|
