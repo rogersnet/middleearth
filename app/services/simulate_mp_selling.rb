@@ -1,7 +1,7 @@
 class SimulateMpSelling
   def self.run_simulation(week,gameboard_id)
      #initialize seller week logs with quantity
-     sellers = GameboardSellerMap.by_gameboard(gameboard_id)
+     sellers = GameboardSellerMap.by_gameboard(gameboard_id).map(&:seller_id)
 
      sellers.each do |seller|
        prev_week = week.to_i - 1
@@ -32,8 +32,8 @@ class SimulateMpSelling
                                     :week_number  => week,
                                     :gameboard_id => gameboard_id,
                                     :segment      => demand[:segment],
-                                    :category     => demand[:category]).first
-          quan_to_update = swl.quantity - distributed_size[index]
+                                    :category     => demand[:category]).first_or_create
+          quan_to_update = (swl.quantity - distributed_size[index]).abs
           swl.update_attributes(:quantity => quan_to_update)
 
           #update p & l for the seller
@@ -54,7 +54,7 @@ class SimulateMpSelling
           #calculate net cost
           seller_decl = SellerWeekPurchaseCostPlan.get_stock_quantity(seller,gameboard_id,week,demand[:segment],demand[:category])
           cost_add = SellerWeekInvestment.calculate_cost_to_subtract(week,gameboard_id,seller,seller_price,distributed_size[index])
-          buying_price = PurchaseCostItems.get_buying_cost(gameboard_id,demand[:segment],demand[:category],seller_decl)
+          buying_price = PurchaseCostItem.get_buying_cost(gameboard_id,demand[:segment],demand[:category],seller_decl)
           coby = buying_price * distributed_size[index] + cost_add + pal.net_cogs
 
           pal.update_attributes(:cogs => cogs, :net_cogs => net_cogs)
@@ -64,9 +64,9 @@ class SimulateMpSelling
      #update current balance
      sellers.each do |seller|
        pal = SellerWeekProfitAndLoss.where(:seller_id => seller, :gameboard_id => gameboard_id, :week_number => week)
-       spc = SellerProgressCard.where(:seller_id => seller, :gameboard_id => gameboard_id).first
+       spc = SellerProgressCard.where(:seller_id => seller, :gameboard_id => gameboard_id).first_or_create
        bal = spc.current_balance
-       spc.update_attributes(:current_balance => bal - pal.net_cogs)
+       spc.update_attributes(:current_balance => (bal - pal.net_cogs).abs)
      end
 
      #simulation over

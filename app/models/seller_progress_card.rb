@@ -8,7 +8,7 @@ class SellerProgressCard < ActiveRecord::Base
 
     response = nil
     begin
-      spc = SellerProgressCard.where(:seller_id => seller_id, :gameboard_id => balance_hash[:gameboard_id]).first
+      spc = SellerProgressCard.where(:seller_id => seller_id, :gameboard_id => balance_hash[:gameboard_id]).first_or_create
       if spc.nil?
         spc = SellerProgressCard.new
         spc.seller_id = seller_id

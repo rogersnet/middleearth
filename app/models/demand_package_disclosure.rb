@@ -17,7 +17,7 @@ class DemandPackageDisclosure < ActiveRecord::Base
   end
 
   def self.fetch_actual_demand(week_number,gameboard_id)
-    demand_package_id = GameboardWeekMap.where(:gameboard_id => gameboard_id,:week_number => week_number).select(:demand_package_disclosure_id).first
+    demand_package_id = GameboardWeekMap.where(:gameboard_id => gameboard_id,:week_number => week_number).pluck(:demand_package_disclosure_id).first
 
     return [] if demand_package_id.nil?
 
