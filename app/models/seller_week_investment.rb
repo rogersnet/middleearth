@@ -49,7 +49,7 @@ class SellerWeekInvestment < ActiveRecord::Base
 
         seller_week_inv_hash.purchase_cost.each do |pc|
           header = SellerWeekPurchaseCostPlan.new
-          header.seller_week_investment_plan_id = week_inv.id
+          header.seller_week_investment_id = week_inv.id
           header.stock_quantity = pc[:stock_quantity]
           header.segment = pc[:segment]
           header.category = pc[:category]
@@ -77,17 +77,17 @@ class SellerWeekInvestment < ActiveRecord::Base
     cost_sheet = CostSheet.find_by_gameboard_id(gameboard_id)
 
     #get marketing, operating and inventory cost based on the package selected
-    marketing_cost = cost_sheet.cost_sheet_investment_packages.where(:id => record.marketing_cost_id).select(:cost_per_week).first || 0
-    operating_cost = cost_sheet.cost_sheet_investment_packages.where(:id => record.operating_cost_id).select(:cost_per_week).first || 0
-    inventory_cost = cost_sheet.cost_sheet_investment_packages.where(:id => record.inventory_cost_id).select(:cost_per_week).first || 0
+    marketing_cost = cost_sheet.cost_sheet_investment_packages.where(:id => record.marketing_cost_id).select(:cost_per_week).first.cost_per_week rescue marketing_cost = 0
+    operating_cost = cost_sheet.cost_sheet_investment_packages.where(:id => record.operating_cost_id).select(:cost_per_week).first.cost_per_week rescue operating_cost = 0
+    inventory_cost = cost_sheet.cost_sheet_investment_packages.where(:id => record.inventory_cost_id).select(:cost_per_week).first.cost_per_week rescue inventory_cost = 0
 
     #get other fixed costs
-    commission   = cost_sheet.cost_sheet_investment_packages.where(:header => 'commision').select(:package).first
-    closing_fee  = cost_sheet.cost_sheet_investment_packages.where(:header => 'closing_fee').select(:package).first
-    packaging    = cost_sheet.cost_sheet_investment_packages.where(:header => 'packaging').select(:package).first
-    shipping     = cost_sheet.cost_sheet_investment_packages.where(:header => 'shipping').select(:package).first
-    service_tax  = cost_sheet.cost_sheet_investment_packages.where(:header => 'service_tax').select(:package).first
-    vat          = cost_sheet.cost_sheet_investment_packages.where(:header => 'vat').select(:package).first
+    commission   = cost_sheet.cost_sheet_investment_packages.where(:header => 'commision').pluck(:package).first
+    closing_fee  = cost_sheet.cost_sheet_investment_packages.where(:header => 'closing_fee').pluck(:package).first
+    packaging    = cost_sheet.cost_sheet_investment_packages.where(:header => 'packaging').pluck(:package).first
+    shipping     = cost_sheet.cost_sheet_investment_packages.where(:header => 'shipping').pluck(:package).first
+    service_tax  = cost_sheet.cost_sheet_investment_packages.where(:header => 'service_tax').pluck(:package).first
+    vat          = cost_sheet.cost_sheet_investment_packages.where(:header => 'vat').pluck(:package).first
 
     cost_to_subtract = marketing_cost + operating_cost + inventory_cost
     cost_to_subtract = cost_to_subtract + (commission / 100) * selling_price
