@@ -169,13 +169,13 @@ ActiveRecord::Schema.define(:version => 25) do
     t.datetime "updated_at",   :null => false
   end
 
-  create_table "seller_week_purchase_cost_plan", :force => true do |t|
-    t.integer  "seller_week_investment_plan_id"
+  create_table "seller_week_purchase_cost_plans", :force => true do |t|
+    t.integer  "seller_week_investment_id"
     t.integer  "stock_quantity"
     t.string   "segment"
     t.string   "category"
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
   end
 
   create_table "seller_week_unit_price_declarations", :force => true do |t|
