@@ -30,11 +30,10 @@ class SellerWeekInvestment < ActiveRecord::Base
         week_inv.gameboard_id = seller_week_inv_hash[:gameboard_id]
         week_inv.week_number  = seller_week_inv_hash[:week_number]
 
-        seller_week_inv_hash.investment_packages.each do |inv|
-          package_id = CostSheet.where(:gameboard_id => seller_week_inv_hash[:gameboard_id],
-                                       :header       => inv[:header],
-                                       :package      => inv[:package]).select(:id).first
-          case inv.header
+        seller_week_inv_hash[:investment_packages].each do |inv|
+          package_id = CostSheetInvestmentPackage.fetch_package_id(seller_week_inv_hash[:gameboard_id],inv[:header],inv[:package])
+
+          case inv[:header]
             when 'marketing_cost'
               week_inv.marketing_cost_id = package_id
             when 'operating_cost'
@@ -47,7 +46,7 @@ class SellerWeekInvestment < ActiveRecord::Base
 
         week_inv = week_inv.reload
 
-        seller_week_inv_hash.purchase_cost.each do |pc|
+        seller_week_inv_hash[:purchase_cost].each do |pc|
           header = SellerWeekPurchaseCostPlan.new
           header.seller_week_investment_id = week_inv.id
           header.stock_quantity = pc[:stock_quantity]
